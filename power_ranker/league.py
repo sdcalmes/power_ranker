@@ -53,7 +53,7 @@ class League(object):
                   'SWID'   : self.swid }
     # Scrape info
     r = requests.get('%sleagueSettings' % (self.ENDPOINT, ), params=params, cookies=cookies)
-#    print(r.content)
+   # print(r.content)
     self.status = r.status_code
     data = r.json()
     if self.status == 401:

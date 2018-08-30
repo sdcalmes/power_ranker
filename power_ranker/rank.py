@@ -27,6 +27,21 @@ class TeamRank:
     print('    Previous : %.3f'%self.prev)
     print('Prev Overall : %.3f'%self.prev_overall)
 
+class ProjectionRank:
+  '''store all projection stats for a team'''
+  def __init__(self):
+      self.exp_wins         = 1.
+      self.div_win_pct      = 1.
+      self.wild_card_pct    = 1.
+      self.make_playoff_pct = 1.
+      self.overall          = 1.
+  def __repr__(self):
+      print('           Exp. Wins : %.3f'%self.exp_wins)
+      print('     Div. Winner (%) : %.3f'%self.div_win_pct)
+      print('       Wild Card (%) : %.3f'%self.wild_card_pct)
+      print('   Make Playoffs (%) : %.3f'%self.make_playoff_pct)
+      print('             Overall : %.3f'%self.overall)
+
 def get_mu(teams, ranking):
   '''Get the league average ranking value
      for specified ranking'''
@@ -74,9 +89,9 @@ def norm_by_max(teams, ranking):
     setattr(t.rank, ranking, norm_rank)
 
 def norm_rank(teams, ranking):
-  '''Normalize the league ranks for 
+  '''Normalize the league ranks for
     specified ranking by feature scaling
-    Scales each ranking from 0.25 to ~1 where 
+    Scales each ranking from 0.25 to ~1 where
     0.25 (~1) corresponds to league min (max)
     Uses IQR instead of total range'''
   l_min = float(get_min_rank(teams, ranking))
@@ -84,4 +99,4 @@ def norm_rank(teams, ranking):
   for t in teams:
     old_val = getattr(t.rank, ranking)
     new_val = 0.25 + 0.375*(old_val - l_min)/float(iqr) if iqr != 0. else 0.25
-    setattr(t.rank, ranking, new_val) 
+    setattr(t.rank, ranking, new_val)

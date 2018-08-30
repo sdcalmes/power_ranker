@@ -9,13 +9,13 @@ def get_arrow(i, j):
   '''Create glyphicon chevron
      i: previous rank
      j: current rank'''
-  
+
   snu = '  <span class="text-success">'
   snd = '  <span class="text-danger">'
   ns = '</span>'
   up = '<span class="glyphicon glyphicon-chevron-up"></span>'
   dn = '<span class="glyphicon glyphicon-chevron-down"></span>'
-  
+
   arrow = ''
   change = int(i) - int(j)
   if change > 0:
@@ -48,11 +48,11 @@ def make_progress_bar(title, value, rank, max_FAAB=100):
   elif value < 66.66: progress_bar += db%(w,value,value)
   else:  progress_bar += db%(s,value,value)
   if "FAAB" in title:
-    progress_bar += sp+'$%d of $%d'%(rank, max_FAAB) + ps 
+    progress_bar += sp+'$%d of $%d'%(rank, max_FAAB) + ps
   else:
     progress_bar += sp+'(%s)'%rank + ps
   progress_bar += vd + vd +dt + rt
-  return progress_bar  
+  return progress_bar
 
 
 #_______________________________
@@ -84,8 +84,10 @@ def make_power_table(teams,week):
   dt = '</td>'
   rt = '</tr>'
   table = ''
-  
+
   for i,t in enumerate(sorted(teams, key=lambda x: x.rank.power, reverse=True)):
+    # print(i)
+    # print(t)
     arrow = get_arrow(int(t.rank.prev), int(i+1))
     table += tr
     table += td + str(i+1) + dt
@@ -98,6 +100,28 @@ def make_power_table(teams,week):
     table += td + "{0:.3f}".format(float(t.rank.sos)) + dt
     table += td + "{0:.3f}".format(float(t.rank.luck)) + dt
     table += td + str(t.rank.tier) + dt
+    table += rt
+
+  return table
+
+def make_rest_of_season_projections_table(teams,week):
+  '''Creates simple table with projections'''
+  tr = '<tr>'
+  td = '<td>'
+  dt = '</td>'
+  rt = '</tr>'
+  table = ''
+
+  for i,t in enumerate(sorted(teams, key=lambda x: x.rank.power, reverse=True)):
+    # print(i)
+    # print(t)
+    arrow = get_arrow(int(t.rank.prev), int(i+1))
+    table += tr
+    table += td + t.owner.title() + dt
+    table += td + "{0:.3f}".format(float(t.projections.exp_wins)) + dt
+    table += td + "{0:.3f}".format(float(t.projections.div_win_pct)) + dt
+    table += td + "{0:.3f}".format(float(t.projections.wc_win_pct)) + dt
+    table += td + "{0:.3f}".format(float(t.projections.div_win_pct + t.projections.wc_win_pct)) + dt
     table += rt
 
   return table
@@ -129,10 +153,10 @@ def get_index(teams_sorted, teamId):
 #_______________________________
 def make_teams_page(teams, year, week, league_name, settings):
   '''Make teams page with stats, standings, game log, radar plots'''
-  # Ordinal makes numbers like 2nd, 3rd, 4th etc 
+  # Ordinal makes numbers like 2nd, 3rd, 4th etc
   ordinal   = lambda n: "%d%s" % (n,"tsnrhtdd"[(n/10%10!=1)*(n%10<4)*n%10::4])
   # Use if player has no ESPN image ...
-  stock_url = 'http://www.suttonsilver.co.uk/wp-content/uploads/blog-stock-03.jpg'  
+  stock_url = 'http://www.suttonsilver.co.uk/wp-content/uploads/blog-stock-03.jpg'
   # Make team page for each owner
   for i,t in enumerate(sorted(teams, key=lambda x: x.rank.power, reverse=True)):
     logo  = t.logoUrl if len(t.logoUrl) > 4 else stock_url
@@ -181,31 +205,31 @@ def make_teams_page(teams, year, week, league_name, settings):
           pf_rank = get_index(pf_sort, t.teamId)
           # want 1st to be 100%
           line = make_progress_bar('Total Points For: %.2f'%float(t.stats.pointsFor),
-                                  100.*float( settings.n_teams+1-pf_rank )/float(settings.n_teams), 
+                                  100.*float( settings.n_teams+1-pf_rank )/float(settings.n_teams),
                                   ordinal(int(pf_rank))  )
         elif 'INSERT_TPA_PB' in line:
           pa_sort = sorted(teams, key=lambda x: x.stats.pointsAgainst, reverse=True)
           pa_rank = get_index(pa_sort, t.teamId)
-          line = make_progress_bar('Total Points Against: %.2f'%float(t.stats.pointsAgainst), 
-                                  100.*float( settings.n_teams+1-pa_rank )/float(settings.n_teams),  
+          line = make_progress_bar('Total Points Against: %.2f'%float(t.stats.pointsAgainst),
+                                  100.*float( settings.n_teams+1-pa_rank )/float(settings.n_teams),
                                   ordinal(int(pa_rank))  )
         elif 'INSERT_HS_PB' in line:
           hs_sort = sorted(teams, key=lambda x: max(x.stats.scores[:week]), reverse=True)
           hs_rank = get_index(hs_sort, t.teamId)
-          line = make_progress_bar('High Score: %.2f'%max(t.stats.scores[:week]), 
-                                  100.*float( settings.n_teams+1-hs_rank)/float(settings.n_teams), 
+          line = make_progress_bar('High Score: %.2f'%max(t.stats.scores[:week]),
+                                  100.*float( settings.n_teams+1-hs_rank)/float(settings.n_teams),
                                   ordinal(int(hs_rank))  )
         elif 'INSERT_LS_PB' in line:
           ls_sort = sorted(teams, key=lambda x: min(x.stats.scores[:week]), reverse=True)
           ls_rank = get_index(ls_sort, t.teamId)
-          line = make_progress_bar('Low Score: %.2f'%min(t.stats.scores[:week]), 
-                                  100.*float( settings.n_teams+1-ls_rank)/float(settings.n_teams), 
+          line = make_progress_bar('Low Score: %.2f'%min(t.stats.scores[:week]),
+                                  100.*float( settings.n_teams+1-ls_rank)/float(settings.n_teams),
                                   ordinal(int(ls_rank))  )
         elif 'INSERT_FAAB_PB' in line:
           if settings.use_faab:
             max_FAAB = float(settings.max_faab)
-            line = make_progress_bar('FAAB Remaining', 
-                                     float(max_FAAB-t.stats.faab)*(100./max_FAAB), 
+            line = make_progress_bar('FAAB Remaining',
+                                     float(max_FAAB-t.stats.faab)*(100./max_FAAB),
                                      int(max_FAAB-t.stats.faab), max_FAAB )
           else:
             line = make_progress_bar('Waiver Priority',
@@ -225,18 +249,20 @@ def make_power_page(teams, year, week, league_name):
   src = ['INSERT WEEK',
          'INSERTLEAGUENAME',
         'PLAYERDROPDOWN',
-        'INSERT TABLE']
+        'INSERT TABLE',
+         'INSERT TABLE 2']
   rep = ['Week %s'%(week+1),
          league_name,
          get_player_drop(teams, level=''),
-         make_power_table(teams,week)]
+         make_power_table(teams,week),
+         make_rest_of_season_projections_table(teams, week)]
   # Write from template to local, with replacements
   output_with_replace(template, local_file, src, rep)
 
 
 #________________________________
 def make_about_page(teams, year, league_name):
-  '''Produces about page, updating week for power rankings'''  
+  '''Produces about page, updating week for power rankings'''
   local_file = 'output/%s/about/index.html'%year
   template   = pkg_resources.resource_filename('power_ranker','docs/template/about.html')
   src = ['PLAYERDROPDOWN',
@@ -251,8 +277,8 @@ def make_about_page(teams, year, league_name):
     p = pkg_resources.resource_filename('power_ranker','docs/template/%s'%pic)
     local_p = os.path.join(os.getcwd(), 'output/%s/about/%s'%(year,pic))
     shutil.copyfile(p, local_p)
-  
-  
+
+
 #________________________________
 def make_welcome_page(year, week, league_id, league_name):
   '''Produces welcome page, with power plot'''
@@ -270,7 +296,7 @@ def make_welcome_page(year, week, league_id, league_name):
   # Write from template to local, with replacements
   output_with_replace(template, local_file, src, rep)
 
-  
+
 #_______________________________________________
 def output_with_replace(template, local_file, src, rep):
   '''Write the <template> file contents to <local_file>
@@ -286,7 +312,7 @@ def output_with_replace(template, local_file, src, rep):
 
 #___________________________________________
 def copy_css_js_themes(year):
-  '''Copy the css and js files to make website 
+  '''Copy the css and js files to make website
      look like it is not from 1990'''
   # Specific themes
   in_files = ['about.js','theme.js','theme.css','cover.css']

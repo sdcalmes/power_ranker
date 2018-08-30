@@ -1,5 +1,6 @@
 from .rank import TeamRank
 from .stats import TeamStats
+from .rank import ProjectionRank
 
 #_________________
 class Team(object):
@@ -9,13 +10,14 @@ class Team(object):
     self.teamId        = data['teamId']
     self.teamAbbrev    = data['teamAbbrev']
     self.teamName      = "%s %s"%(data['teamLocation'], data['teamNickname'])
-    self.owner         = "%s %s"%(data['owners'][0]['firstName'].title(), 
+    self.owner         = "%s %s"%(data['owners'][0]['firstName'].title(),
                                   data['owners'][0]['lastName'].title())
     self.logoUrl       = data['owners'][0]['photoUrl'] if 'logoUrl' not in data.keys() else data['logoUrl']
     self.divisionId    = data['division']['divisionId']
     self.divisionName  = data['division']['divisionName']
     self.stats         = TeamStats(data)
-    self.rank          = TeamRank() 
+    self.rank          = TeamRank()
+    self.projections   = ProjectionRank()
     self._get_game_data(data)
 
   def __repr__(self):
