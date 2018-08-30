@@ -250,7 +250,7 @@ def make_power_page(teams, year, week, league_name):
          'INSERTLEAGUENAME',
         'PLAYERDROPDOWN',
         'INSERT TABLE',
-         'INSERT TABLE 2']
+         'INSERT PROJECTIONS']
   rep = ['Week %s'%(week+1),
          league_name,
          get_player_drop(teams, level=''),
