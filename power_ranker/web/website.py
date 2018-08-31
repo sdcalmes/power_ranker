@@ -178,7 +178,8 @@ def make_teams_page(teams, year, week, league_name, settings):
     template = pkg_resources.resource_filename('power_ranker','docs/template/player.html')
     # create output and directory if it doesn't exist
     os.makedirs(os.path.dirname(out_name), exist_ok=True)
-    src = ['INSERTOWNER',
+    src = ['CURRENTPOWERHTML',
+           'INSERTOWNER',
            'INSERTLEAGUENAME',
            'INSERTWEEK',
            'IMAGELINK',
@@ -194,7 +195,8 @@ def make_teams_page(teams, year, week, league_name, settings):
            'RADARPLOT',
            'PLAYERDROPDOWN',
            'WEEKDROPDOWN']
-    rep = [t.owner,
+    rep = ['../power_%s.html' %week,
+           t.owner,
            league_name,
            'week%s'%week,
            logo,
@@ -287,11 +289,13 @@ def make_about_page(teams, year, week, league_name):
   '''Produces about page, updating week for power rankings'''
   local_file = 'output/%s/about/index.html'%year
   template   = pkg_resources.resource_filename('power_ranker','docs/template/about.html')
-  src = ['PLAYERDROPDOWN',
+  src = ['CURRENTPOWERHTML',
+         'PLAYERDROPDOWN',
          'WEEKDROPDOWN',
          'INSERTLEAGUENAME']
-  rep = [get_player_drop(teams, level='../'),
-         get_week_drop(week, level='../'),
+  rep = ['../power_%s.html' %week,
+         get_player_drop(teams, level='../'),
+         get_week_drop(week, level='..'),
          league_name]
   # Write from template to local, with replacements
   output_with_replace(template, local_file, src, rep)
@@ -309,11 +313,13 @@ def make_welcome_page(year, week, league_id, league_name):
   local_file = 'output/%s/index.html'%year
   template   = pkg_resources.resource_filename('power_ranker','docs/template/welcome.html')
   # Source and replacement strings from template
-  src = ['INSERTWEEK',
+  src = ['CURRENTPOWERHTML',
+         'INSERTWEEK',
          'INSERTNEXT',
          'INSERTLEAGUEID',
          'INSERTLEAGUENAME']
-  rep = ['week%d'%week,
+  rep = ['power_%s.html' %week,
+         'week%d'%week,
          'Week %d'%(week+1),
          str(league_id),
          str(league_name)]
