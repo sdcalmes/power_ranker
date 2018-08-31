@@ -268,12 +268,16 @@ def make_power_page(teams, year, week, league_name):
         'WEEKDROPDOWN',
         'INSERT TABLE',
          'INSERT PROJECTIONS']
+  if week == 1:
+    rest_of_ssn_proj = ''
+  else:
+      rest_of_ssn_proj = make_rest_of_season_projections_table(teams, week)
   rep = ['Week %s'%(week+1),
          league_name,
          get_player_drop(teams, level=''),
          get_week_drop(week, level='.'),
          make_power_table(teams,week),
-         make_rest_of_season_projections_table(teams, week)]
+         rest_of_ssn_proj]
   # Write from template to local, with replacements
   output_with_replace(template, local_file, src, rep)
 

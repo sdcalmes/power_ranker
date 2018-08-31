@@ -44,8 +44,13 @@ for y in range(year, currYear):
     subprocess.call('python command_line.py -l ' + leagueId + ' -y' + str(y) + ' -w 1')
     replace(path, 'doPlayoffs      = False', 'doPlayoffs = False')
 
+    replace(path, 'doSetup       = True', 'doSetup = True')
+    replace(path, 'getPrev       = False', 'getPrev = False')
+
     for x in range(2, 14):
       if x == 2:
+        replace(path, 'getPrev = False', 'getPrev = True')
+        replace(path, 'doSetup = True', 'doSetup = False')
         replace(path, 'doPlayoffs = False', 'doPlayoffs = True')
         replace(path, 'num_simulations = 200000', 'num_simulations = 20000')
       if x == 5:
