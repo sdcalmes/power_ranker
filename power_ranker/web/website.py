@@ -144,6 +144,17 @@ def get_player_drop(teams, level=''):
 
   return new_line
 
+def get_week_drop(week, level=''):
+    li = '<li>'
+    li2 = '</li>'
+    a = '<a href="%s/power_%s.html">%s</a>'
+    new_line = ''
+
+    for i in range(1, 14):
+        new_line += li + a%(level, i, 'Week ' + str(i)) + li2
+
+    return new_line
+
 #__________________________________
 def get_index(teams_sorted, teamId):
   '''Return ranking from ordered list of teamId'''
@@ -181,7 +192,8 @@ def make_teams_page(teams, year, week, league_name, settings):
            'POWERRANK',
            'AGGREGATEPCT',
            'RADARPLOT',
-           'PLAYERDROPDOWN']
+           'PLAYERDROPDOWN',
+           'WEEKDROPDOWN']
     rep = [t.owner,
            league_name,
            'week%s'%week,
@@ -196,10 +208,13 @@ def make_teams_page(teams, year, week, league_name, settings):
            '%s <small>%s</small>'%(ordinal(int(i+1)), get_arrow(int(t.rank.prev), int(i+1))),
            '%.3f <small>(%d-%d)</small>'%(t.stats.awp,t.stats.awins,t.stats.alosses),
            'radar_%s.png'%t.teamId,
-           get_player_drop(teams, level='../')]
+           get_player_drop(teams, level='../'),
+           get_week_drop(week, level='../')]
     with open(template,'r') as f_in, open(out_name,'w') as f_out:
       for line in f_in:
         for (s,r) in zip(src, rep):
+          if(line is 'WEEKDROPDOWN'):
+              print("HEY HEY HEY!")
           line = line.replace(s,r)
         if 'INSERT_TPF_PB' in line:
           pf_sort = sorted(teams, key=lambda x: x.stats.pointsFor, reverse=True)
@@ -245,16 +260,18 @@ def make_teams_page(teams, year, week, league_name, settings):
 #________________________________
 def make_power_page(teams, year, week, league_name):
   '''Produces power rankings page'''
-  local_file = 'output/%s/power.html'%year
+  local_file = 'output/%s/power_%s.html'%(year, week)
   template   = pkg_resources.resource_filename('power_ranker','docs/template/power.html')
   src = ['INSERT WEEK',
          'INSERTLEAGUENAME',
         'PLAYERDROPDOWN',
+        'WEEKDROPDOWN',
         'INSERT TABLE',
          'INSERT PROJECTIONS']
   rep = ['Week %s'%(week+1),
          league_name,
          get_player_drop(teams, level=''),
+         get_week_drop(week, level='.'),
          make_power_table(teams,week),
          make_rest_of_season_projections_table(teams, week)]
   # Write from template to local, with replacements
@@ -262,13 +279,15 @@ def make_power_page(teams, year, week, league_name):
 
 
 #________________________________
-def make_about_page(teams, year, league_name):
+def make_about_page(teams, year, week, league_name):
   '''Produces about page, updating week for power rankings'''
   local_file = 'output/%s/about/index.html'%year
   template   = pkg_resources.resource_filename('power_ranker','docs/template/about.html')
   src = ['PLAYERDROPDOWN',
+         'WEEKDROPDOWN',
          'INSERTLEAGUENAME']
   rep = [get_player_drop(teams, level='../'),
+         get_week_drop(week, level='../'),
          league_name]
   # Write from template to local, with replacements
   output_with_replace(template, local_file, src, rep)
@@ -340,4 +359,4 @@ def generate_web(teams, year, week, league_id, league_name, settings, doSetup=Tr
   make_welcome_page(year, week, league_id, league_name)
   if doSetup:
     copy_css_js_themes(year)
-    make_about_page(teams, year, league_name)
+    make_about_page(teams, year, week, league_name)
