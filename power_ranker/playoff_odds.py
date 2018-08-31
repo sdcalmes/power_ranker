@@ -38,8 +38,9 @@ def calc_playoffs(teams, year, week, settings, n_sims=1000000):
     t.projections.exp_wins = exp_wins[t.teamId - 1]
     # ew      = exp_wins[t.teamId - 1]
     t.projections.div_win_pct = 100.*div[t.teamId -1]
-    t.projections.wc_win_pct = 100.*wc[t.teamId -1]
-    print('{:>20s}\t{:.3f}    \t{:.3f}         \t{:.3f}        \t{:.3f}'.format(t.owner, t.projections.exp_wins, t.projections.div_win_pct, t.projections.wc_win_pct, t.projections.div_win_pct+t.projections.wc_win_pct ) )
+    t.projections.wild_card_pct = 100.*wc[t.teamId -1]
+    t.projections.overall = i
+    print('{:>20s}\t{:.3f}    \t{:.3f}         \t{:.3f}        \t{:.3f}'.format(t.owner, t.projections.exp_wins, t.projections.div_win_pct, t.projections.wild_card_pct, t.projections.div_win_pct+t.projections.wild_card_pct ) )
   return
 
 

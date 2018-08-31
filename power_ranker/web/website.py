@@ -117,11 +117,12 @@ def make_rest_of_season_projections_table(teams,week):
     # print(t)
     arrow = get_arrow(int(t.rank.prev), int(i+1))
     table += tr
+    table += td + str(i+1) + dt
     table += td + t.owner.title() + dt
     table += td + "{0:.3f}".format(float(t.projections.exp_wins)) + dt
     table += td + "{0:.3f}".format(float(t.projections.div_win_pct)) + dt
-    table += td + "{0:.3f}".format(float(t.projections.wc_win_pct)) + dt
-    table += td + "{0:.3f}".format(float(t.projections.div_win_pct + t.projections.wc_win_pct)) + dt
+    table += td + "{0:.3f}".format(float(t.projections.wild_card_pct)) + dt
+    table += td + "{0:.3f}".format(float(t.projections.div_win_pct + t.projections.wild_card_pct)) + dt
     table += rt
 
   return table
