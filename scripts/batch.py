@@ -1,6 +1,7 @@
 import subprocess
 from tempfile import mkstemp
 from shutil import move
+import argparse
 import datetime
 from os import fdopen, remove
 
@@ -35,9 +36,19 @@ path = 'MY_LOCAL_CONFIG.cfg'
 #     replace(path, 'week = ' + str(x-1), 'week = ' + str(x))
 #     subprocess.call("python command_line.py -c MY_LOCAL_CONFIG.cfg")
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-l', '--leagueid', help='ESPN Public league ID')
+parser.add_argument('-y', '--year', help='Year to start at')
+
+args = parser.parse_args()
+
 print("This batch script will pull all data from your league. It only needs to be ran once.")
-year = int(input("What year whould you like to start with? "))
-leagueId = input("What is your league ID? ")
+if args.leagueid and args.year:
+    year = int(args.year)
+    leagueId = args.leagueid
+else:
+    year = int(input("What year whould you like to start with? "))
+    leagueId = input("What is your league ID? ")
 currYear = int(datetime.datetime.now().year)
 
 for y in range(year, currYear):
