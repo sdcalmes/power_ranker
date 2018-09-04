@@ -214,9 +214,9 @@ def make_header(teams, year, week, league_name, settings):
            'WEEDROPDOWN']
 
     rep = [league_name,
-           get_player_drop(teams, level=''),
-           get_year_drop(2013, year, week, level='..'),
-           get_week_drop(starting_year, year, teams, level='/%s' % year)]
+           get_player_drop(teams, level='/power_ranker/scripts/output/%s/' % year),
+           get_year_drop(2013, year, week, level='/power_ranker/scripts/output'),
+           get_week_drop(starting_year, year, teams, level='/power_ranker/scripts/output/%s' % year)]
 
 
     output_with_replace(template, out_name, src, rep)
@@ -357,7 +357,7 @@ def make_power_page(teams, year, week, league_name):
 # ________________________________
 def make_about_page(teams, year, week, league_name):
     '''Produces about page, updating week for power rankings'''
-    local_file = 'output/%s/about/index.html' % year
+    local_file = 'output/about/index.html'
     template = pkg_resources.resource_filename('power_ranker', 'docs/template/about.html')
     src = ['CURRENTPOWERHTML',
            'PLAYERDROPDOWN',
@@ -373,7 +373,7 @@ def make_about_page(teams, year, week, league_name):
     in_pics = ['dom_graph.png', 'tiers_example.png']
     for pic in in_pics:
         p = pkg_resources.resource_filename('power_ranker', 'docs/template/%s' % pic)
-        local_p = os.path.join(os.getcwd(), 'output/%s/about/%s' % (year, pic))
+        local_p = os.path.join(os.getcwd(), 'output/about/%s' %pic)
         shutil.copyfile(p, local_p)
 
 
@@ -416,7 +416,7 @@ def copy_css_js_themes(year):
     '''Copy the css and js files to make website
        look like it is not from 1990'''
     # Specific themes
-    in_files = ['about.js', 'theme.js', 'theme.css', 'cover.css']
+    in_files = ['theme.js', 'theme.css', 'cover.css']
     for f in in_files:
         template = pkg_resources.resource_filename('power_ranker', 'docs/template/%s' % f)
         local_file = os.path.join(os.getcwd(), 'output/%s/%s' % (year, f))
@@ -427,6 +427,10 @@ def copy_css_js_themes(year):
         template_dir = pkg_resources.resource_filename('power_ranker', 'docs/template/%s' % b)
         local_dir = os.path.join(os.getcwd(), 'output/%s' % (b))
         copy_tree(template_dir, local_dir)
+
+    template = pkg_resources.resource_filename('power_ranker', 'docs/template/about.js')
+    local = os.path.join(os.getcwd(), 'output/about')
+    shutil.copyfile(template, local_file)
 
 
 # _________________________
