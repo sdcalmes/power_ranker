@@ -12,10 +12,10 @@ def run_cl_rankings(config_file, private_league=False):
   print('Using {} to generate power rankings'.format(config_file))
   if private_league:
     # Overwrite cookies in config file with current login credentials
-    copy_config(data_file=config_file, 
-                local_file='%s_tmp'%config_file, 
+    copy_config(data_file=config_file,
+                local_file='%s_tmp'%config_file,
                 private_league=private_league)
-    os.rename(os.path.join(os.getcwd(),'%s_tmp'%config_file), 
+    os.rename(os.path.join(os.getcwd(),'%s_tmp'%config_file),
               os.path.join(os.getcwd(), config_file))
   my_league = League(config_file)
   my_league.get_power_rankings()
@@ -33,8 +33,8 @@ def set_local_cfg(leagueid, year, week, private_league=False):
   run_cl_rankings('MY_LOCAL_CONFIG.cfg')
 
 #_________________________________________________________
-def copy_config(data_file=None, 
-                local_file=None, 
+def copy_config(data_file=None,
+                local_file=None,
                 src=[], rep=[], private_league=False):
   '''Copy default configuration file locally for user to edit
     Optionally pass list of lines to replace in configuration file'''
@@ -55,7 +55,7 @@ def copy_config(data_file=None,
     for line in f_in:
       for (s,r) in zip(src, rep):
         if line.startswith(s) and '#' not in line:
-          line = '%s = %s\n'%(s,r) 
+          line = '%s = %s\n'%(s,r)
       f_out.write(line)
 
 #_______________________
@@ -85,7 +85,7 @@ def main():
   # Download local config file
   if args.download:
     copy_config(private_league=args.private)
-  # Supplied config file to get rankings  
+  # Supplied config file to get rankings
   elif args.config:
     run_cl_rankings(args.config, private_league=args.private)
   # Supplied league information, use rest of default info

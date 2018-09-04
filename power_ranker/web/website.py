@@ -214,7 +214,7 @@ def make_header(teams, year, week, league_name, settings):
            'WEEDROPDOWN']
 
     rep = [league_name,
-           get_player_drop(teams, level='/%s/' % year),
+           get_player_drop(teams, level=''),
            get_year_drop(2013, year, week, level='..'),
            get_week_drop(starting_year, year, teams, level='/%s' % year)]
 
