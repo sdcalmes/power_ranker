@@ -123,6 +123,17 @@ def calc_tiers(teams, year, week, bw=0.09, order=4, show=False):
     t.rank.tier =  tier
 
 #________________________________________
+def save_current_week(year, week):
+  new_name = 'output/%s/current_week.txt'%(year)
+  os.makedirs(os.path.dirname(new_name), exist_ok=True)
+  f_new = open(new_name, 'w')
+  f_new.write('%s'%week)
+  f_new.close()
+
+# #________________________________________
+# def save_list_of_years(year):
+
+#________________________________________
 def save_ranks(teams, year, week, getPrev=True):
   '''Save the power rankings to a file, 
     optionally retreive previous week's rankings'''

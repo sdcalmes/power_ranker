@@ -15,6 +15,7 @@ from .utils import (fix_teamId,
                     calc_cons,
                     calc_power,
                     save_ranks,
+                    save_current_week,
                     calc_tiers)
 from .rank import norm_by_zscore, norm_rank, norm_by_max
 from .web.radar import make_radar
@@ -155,6 +156,9 @@ class League(object):
     calc_power(teams_sorted, self.week, w_dom=w_dom, w_lsq=w_lsq, w_col=w_col,
                w_awp=w_awp, w_sos=w_sos, w_luck=w_luck, w_cons=w_cons, w_strk=w_strk)
 
+  def _save_current_week(self):
+    save_current_week(self.year, self.week)
+
   def _save_ranks(self, getPrev=True):
     '''Save the power rankings, optionally calculate change from previous week'''
     teams_sorted = self.sorted_teams(sort_key='rank.power', reverse=True)
@@ -214,6 +218,8 @@ class League(object):
 	                   w_luck = self.config['Power'].getfloat('w_luck', 0.06),
 	                   w_cons = self.config['Power'].getfloat('w_cons', 0.10),
 	                   w_strk = self.config['Power'].getfloat('w_strk', 0.06) )
+    #Save the current week to a file
+    self._save_current_week()
 	  # Calculate change from previous week
     self._save_ranks(getPrev = self.config['Tiers'].getboolean('getPrev', False))
 	  # Get Tiers

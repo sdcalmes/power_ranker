@@ -53,8 +53,8 @@ class TeamStats:
        wins, losses, streak
        aggregate wins, aggregate losses,
        aggregate wpct'''
-    self.awins      = 0. # aggregate wins
-    self.alosses    = 0. # aggregate losses
+    self.awins      = 0 # aggregate wins
+    self.alosses    = 0 # aggregate losses
     self.pointsFor  = 0. # points for
     self.pointsAgainst = 0. # points against
     self.wins       = 0

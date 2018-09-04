@@ -93,6 +93,7 @@ def make_power_table(teams,week):
     table += td + str(i+1) + dt
     table += td + t.owner.title() + arrow + dt
     table += td + '%s-%s'%(t.stats.wins,t.stats.losses) + dt
+    table += td + '%s-%s'%(t.stats.awins,t.stats.alosses) + dt
     table += td + "{0:.3f}".format(float(t.rank.power)) + dt
     table += td + "{0:.3f}".format(float(t.rank.lsq)) + dt
     table += td + "{0:.3f}".format(float(t.rank.dom)) + dt
