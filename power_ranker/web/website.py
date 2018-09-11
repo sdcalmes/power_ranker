@@ -156,7 +156,7 @@ def get_player_drop(teams, level=''):
 def get_week_drop(starting_year, year, week, level=''):
     li = '<li>'
     li2 = '</li>'
-    a = '<a href="%s/power_%s.html">%s</a>'
+    a = '<a href="/%s/power_%s.html">%s</a>'
     new_line = ''
 
     for i in range(1, 14):
@@ -170,23 +170,23 @@ def get_year_drop(starting_year, year, week, level=''):
     ul1 = '<ul class="dropdown-menu">'
     ul2 = '</ul>'
     a1 = '<a class="dropdown-item dropdown-toggle" href="#">%s <span class="caret"></span></a>'
-    a2 = '<a href="%s/%s/power_%s.html">%s</a>'
+    a2 = '<a href="/%s/power_%s.html">%s</a>'
     new_line = ''
     for i in range(starting_year, year):
         new_line += li + a1%i + ul1
         for j in range(0, 14):
             if j == 0:
-                new_line += li + a2%(level, i, j, 'Preseason') + li2
+                new_line += li + a2%(i, j, 'Preseason') + li2
             else:
-                new_line += li + a2%(level, i, j, 'Week ' + str(j)) + li2
+                new_line += li + a2%(i, j, 'Week ' + str(j)) + li2
         new_line += ul2 + li2
 
     new_line += li + a1%year +ul1
     for i in range(0, week+1):
         if i == 0:
-            new_line += li + a2%(level, year, i, 'Preseason') + li2
+            new_line += li + a2%(year, i, 'Preseason') + li2
         else:
-            new_line += li + a2%(level, year, i, 'Week ' + str(i)) + li2
+            new_line += li + a2%(year, i, 'Week ' + str(i)) + li2
 
     new_line += ul2 + li2
 
@@ -208,15 +208,17 @@ def make_header(teams, year, week, league_name, settings):
     out_name = 'output/header.html'
     template = pkg_resources.resource_filename('power_ranker', 'docs/template/header.html')
     os.makedirs(os.path.dirname(out_name), exist_ok=True)
-    src = ['INSERTLEAGUENAME',
+    src = ['INSERTCURRENTYEAR',
+           'INSERTLEAGUENAME',
            'PLAYERDROPDOWN',
            'YEARDROPDOWN',
            'WEEDROPDOWN']
 
-    rep = [league_name,
-           get_player_drop(teams, level='/power_ranker/scripts/output/%s/' % year),
-           get_year_drop(2013, year, week, level='/power_ranker/scripts/output'),
-           get_week_drop(starting_year, year, teams, level='/power_ranker/scripts/output/%s' % year)]
+    rep = [str(year),
+           league_name,
+           get_player_drop(teams, level='/%s/' %year),
+           get_year_drop(2013, year, week, level='' ),
+           get_week_drop(starting_year, year, teams, level='' )]
 
 
     output_with_replace(template, out_name, src, rep)
@@ -241,6 +243,7 @@ def make_teams_page(teams, year, week, league_name, settings):
         src = ['CURRENTPOWERHTML',
                'INSERTOWNER',
                'INSERTLEAGUENAME',
+               'INSERTYEAR',
                'INSERTWEEK',
                'IMAGELINK',
                'TEAMNAME',
@@ -258,6 +261,7 @@ def make_teams_page(teams, year, week, league_name, settings):
         rep = ['../power_%s.html' % week,
                t.owner,
                league_name,
+               str(year),
                'week%s' % week,
                logo,
                t.teamName,
@@ -363,7 +367,7 @@ def make_about_page(teams, year, week, league_name):
            'PLAYERDROPDOWN',
            'WEEKDROPDOWN',
            'INSERTLEAGUENAME']
-    rep = ['../power_%s.html' % week,
+    rep = ['/%s/power_%s.html' % (year,week),
            get_player_drop(teams, level='../'),
            get_week_drop(2013, year, week, level='..'),
            league_name]
@@ -429,7 +433,12 @@ def copy_css_js_themes(year):
         copy_tree(template_dir, local_dir)
 
     template = pkg_resources.resource_filename('power_ranker', 'docs/template/about.js')
-    local = os.path.join(os.getcwd(), 'output/about')
+    os.makedirs('output/about')
+    local_file = os.path.join(os.getcwd(), 'output/about/about.js')
+    shutil.copyfile(template, local_file)
+
+    template = pkg_resources.resource_filename('power_ranker', 'docs/now.json')
+    local_file = os.path.join(os.getcwd(), 'output/now.json')
     shutil.copyfile(template, local_file)
 
 
